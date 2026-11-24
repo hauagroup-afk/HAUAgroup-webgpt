@@ -5,7 +5,7 @@ This repository is designed for Cloudflare Pages with Pages Functions.
 ## Build settings
 - Framework preset: None
 - Build command: leave empty
-- Build output directory: `. ` (single dot / repository root)
+- Build output directory: `.` (repository root)
 - Production branch: `main`
 
 ## Required environment variables
