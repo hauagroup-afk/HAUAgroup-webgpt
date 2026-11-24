@@ -77,7 +77,7 @@ export async function getAdminContext(request, env) {
   if (!profileResponse.ok) return { error: "forbidden", clearCookie: clearSessionCookie() };
   const profiles = await profileResponse.json();
   const profile = profiles[0];
-  if (!profile || !profile.is_active || !["group_admin", "company_admin"].includes(profile.role)) {
+  if (!profile || !profile.is_active || !["group_admin", "company_admin"].includes(profile.role) || (profile.role === "company_admin" && !profile.company_id)) {
     return { error: "forbidden", clearCookie: clearSessionCookie() };
   }
   return { url, key, session, user, profile, setCookie };
