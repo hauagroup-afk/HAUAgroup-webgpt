@@ -8,11 +8,11 @@ const SECURITY_HEADERS = {
   "Cross-Origin-Opener-Policy": "same-origin",
   "Cross-Origin-Resource-Policy": "same-origin",
 };
-export async function onRequest({ next }) {
+export async function onRequest({ request, next }) {
   const response = await next();
   const headers = new Headers(response.headers);
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) headers.set(name, value);
-  if (new URL(response.url || "https://example.invalid").pathname.startsWith("/api/")) {
+  if (new URL(request.url).pathname.startsWith("/api/")) {
     headers.set("Cache-Control", "no-store, private");
   }
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
