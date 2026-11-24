@@ -22,7 +22,7 @@ export async function onRequestPost({ request, env }) {
   });
   const profiles = profileResponse.ok ? await profileResponse.json() : [];
   const profile = profiles[0];
-  if (!profile || !profile.is_active || !["group_admin", "company_admin"].includes(profile.role)) {
+  if (!profile || !profile.is_active || !["group_admin", "company_admin"].includes(profile.role) || (profile.role === "company_admin" && !profile.company_id)) {
     await fetch(`${url}/auth/v1/logout`, { method: "POST", headers: { apikey: key, Authorization: `Bearer ${data.access_token}` } });
     return json({ error: "This account has no active administrator access." }, 403);
   }
