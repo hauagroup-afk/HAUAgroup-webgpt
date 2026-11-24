@@ -50,7 +50,7 @@ function config(env) {
   return { url: env.SUPABASE_URL.replace(/\/$/, ""), key: env.SUPABASE_PUBLISHABLE_KEY };
 }
 async function authFetch(url, key, token) {
-  return fetch(url, { headers: { apikey: key, Authorization: `Bearer ${token} } });
+  return fetch(url, { headers: { apikey: key, Authorization: `Bearer ${token}` } });
 }
 export async function getAdminContext(request, env) {
   const { url, key } = config(env);
