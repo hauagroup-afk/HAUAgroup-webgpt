@@ -1,5 +1,5 @@
 const SECURITY_HEADERS = {
-  "Content-Security-Policy": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self' data:; connect-src 'self'; upgrade-insecure-requests",
+  "Content-Security-Policy": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'sha256-+najsTGHPLrsR7lLXlaM9S7qoU4LgA+glSlg0H3qd0k=' 'sha256-nx5OeDqWhLOqDOnlb4Mw1AlOxX8C1OEsmQKgx77jxyc='; style-src 'self' 'sha256-kcFSTThznTZlsXhorwCMBANIuSW20mL9vLnIaIWYEK8=' 'sha256-GIv/XkwL8K4dTPMM90IXGLd9bj7cmdDv7DtsnIrVePc='; img-src 'self'; font-src 'self' data:; connect-src 'self'; upgrade-insecure-requests",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "strict-origin-when-cross-origin",
