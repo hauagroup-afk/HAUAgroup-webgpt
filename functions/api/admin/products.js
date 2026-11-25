@@ -3,7 +3,7 @@ export async function onRequestGet({request,env}) {
   try {
     const ctx=await getAdminContext(request,env);
     if(ctx.error) return authResponse({error:ctx.error},ctx,ctx.error==="unauthorized"?401:403);
-    const params=new URLSearchParams({select:"id,company_id,category_id,slug,name,summary,status,featured,sort_order,updated_at",order:"updated_at.desc",limit:"100"});
+    const params=new URLSearchParams({select:"id,company_id,category_id,slug,name,summary,status,featured,sort_order,unit_price,currency,updated_at",order:"updated_at.desc",limit:"100"});
     if(ctx.profile.role==="company_admin") params.set("company_id",`eq.${ctx.profile.company_id}`);
     const r=await supabaseRequest(ctx,`/rest/v1/products?${params}`);
     if(!r.ok) return authResponse({error:"Unable to load products."},ctx,502);
@@ -19,7 +19,7 @@ export async function onRequestPost({request,env}) {
     if(ctx.error) return authResponse({error:ctx.error},ctx,ctx.error==="unauthorized"?401:403);
     const companyId=ctx.profile.role==="group_admin"?body.company_id:ctx.profile.company_id;
     if(!companyId) return authResponse({error:"Select a company."},ctx,400);
-    const payload={company_id:companyId,category_id:body.category_id||null,slug:body.slug.trim().toLowerCase(),name:body.name,summary:body.summary||{},description:body.description||{},specifications:body.specifications||{},image_paths:[],status:"draft",featured:false,sort_order:0};
+    const price=body.unit_price==null||body.unit_price===""?null:Number(body.unit_price);\n    if(price!==null&&(!Number.isFinite(price)||price<0||price>10000000)) return authResponse({error:"Enter a valid product price in BDT."},ctx,400);\n    const payload={company_id:companyId,category_id:body.category_id||null,slug:body.slug.trim().toLowerCase(),name:body.name,summary:body.summary||{},description:body.description||{},specifications:body.specifications||{},image_paths:[],unit_price:price,currency:"BDT",status:"draft",featured:false,sort_order:0};
     const r=await supabaseRequest(ctx,"/rest/v1/products",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify(payload)});
     if(!r.ok) return authResponse({error:"Unable to create product. Check slug uniqueness and permissions."},ctx,400);
     return authResponse({product:(await r.json())[0]},ctx,201);
