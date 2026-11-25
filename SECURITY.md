@@ -2,7 +2,7 @@
 
 ## Access model
 - Public visitors can read active company profiles, active categories, published products, and published site content.
-- Public visitors can submit inquiries only through the validated inquiry endpoint and the database INSERT policy.
+- Public visitors can submit inquiries and guest COD orders only through validated server endpoints. Guest order writes use a server-side Supabase secret key; it is never sent to browsers.
 - Administrators sign in through the private /admin/ portal. There is no public registration.
 - Every privileged request revalidates the Supabase Auth user and reads the administrator profile from the database. User-editable metadata is never used for authorization.
 - Company administrators are scoped to their assigned company. Group administrators have group-wide scope. Supabase RLS remains the final authorization boundary.
@@ -22,7 +22,7 @@ Set these Cloudflare Pages environment variables:
 Never add service-role keys, database passwords, access tokens, or user credentials to GitHub, client-side code, or build logs.
 
 ## Before production launch
-- Provision the first group administrator through a trusted private process; do not enable public signup.
+- Provision administrators through a trusted private process. Customer sign-up may be enabled, but customer signup must never grant administrator roles.
 - Verify Supabase Auth email/password policy, MFA availability, password strength, and rate limits.
 - Run Supabase Security Advisor and test anonymous, company-admin, and group-admin access separately.
 - Add Turnstile or an equivalent abuse-control layer to public inquiry submission if spam appears.
