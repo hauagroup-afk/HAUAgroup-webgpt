@@ -17,18 +17,21 @@ function headers(key, extra = {}) {
 export async function onRequestPost({ request, env }) {
   if (!isSameOrigin(request)) return json({ error: "Request origin rejected." }, 403);
 
+  const contentLength = Number(request.headers.get("Content-Length") || 0);
+  if (contentLength > 32000) return json({ error: "Order request is too large." }, 413);
   let body;
   try { body = await request.json(); } catch { return json({ error: "Invalid request." }, 400); }
   if (body.website) return json({ ok: true }, 201);
 
   const slug = body.company;
   if (!SLUGS.has(slug)) return json({ error: "Unknown company." }, 400);
-  if (!validText(body.customer?.name, 120) || !validText(body.customer?.phone, 40)) {
+  if (!body.customer || typeof body.customer !== "object" || Array.isArray(body.customer)) return json({ error: "Customer details are required." }, 400);
+  if (!validText(body.customer.name, 120) || !validText(body.customer.phone, 40)) {
     return json({ error: "Name and phone number are required." }, 400);
   }
   const email = typeof body.customer.email === "string" ? body.customer.email.trim() : "";
   if (email && (email.length > 254 || !EMAIL.test(email))) return json({ error: "Enter a valid email address." }, 400);
-  if (!body.customer.address || typeof body.customer.address !== "object" || Array.isArray(body.customer.address)) {
+  if (!body.customer.address || typeof body.customer.address !== "object" || Array.isArray(body.customer.address) || JSON.stringify(body.customer.address).length > 4000) {
     return json({ error: "A delivery address is required." }, 400);
   }
   if (!Array.isArray(body.items) || body.items.length < 1 || body.items.length > 30) {
