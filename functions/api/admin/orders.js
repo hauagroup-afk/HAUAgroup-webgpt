@@ -27,7 +27,7 @@ export async function onRequestPatch({request,env}){
  try{
   const ctx=await getAdminContext(request,env);
   if(ctx.error)return authResponse({error:ctx.error},ctx,ctx.error==="unauthorized"?401:403);
-  const r=await supabaseRequest(ctx,`/rest/v1/orders?id=eq.${encodeURIComponent(body.id)}`,{method:"PATCH",headers:{Prefer:"return=representation"},body:JSON.stringify({order_status:body.order_status})});
+  const filters=new URLSearchParams({id:`eq.${body.id}`});if(ctx.profile.role==="company_admin")filters.set("company_id",`eq.${ctx.profile.company_id}`);const r=await supabaseRequest(ctx,`/rest/v1/orders?${filters}`, {method:"PATCH",headers:{Prefer:"return=representation"},body:JSON.stringify({order_status:body.order_status})});
   if(!r.ok)return authResponse({error:"Unable to update order. Check your access."},ctx,400);
   const rows=await r.json();
   if(!rows.length)return authResponse({error:"Order not found or outside your access scope."},ctx,404);
