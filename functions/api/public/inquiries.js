@@ -3,6 +3,7 @@ const SLUGS=new Set(["lazeez","rifa-aimans-attire","ruhama-technology","waha-agr
 export async function onRequestPost({request,env}) {
   if(!isSameOrigin(request)) return json({error:"Request origin rejected."},403);
   let body;try{body=await request.json()}catch{return json({error:"Invalid request."},400)}
+  if(JSON.stringify(body).length>16000) return json({error:"Inquiry request is too large."},413);
   if(body.website) return json({ok:true});
   if(!validText(body.name,120)||!validText(body.message,4000)) return json({error:"Name and message are required."},400);
   if(body.email && (typeof body.email!=="string"||body.email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email))) return json({error:"Enter a valid email address."},400);
