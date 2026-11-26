@@ -8,14 +8,12 @@
   const observer = new MutationObserver(() => {
     if (!document.getElementById("branch")?.classList.contains("active")) return;
     const heading = panel.querySelector("h3");
-    if (!heading || heading.textContent !== (tr("products"))) return;
-    // Enhancement is only applied when product tiles are present or empty state is rendered.
-    const signature = currentBranch + ":" + (data?.products||[]).map(x=>x.id).join(","); if (panel.dataset.marketSignature === signature) return;
-    panel.dataset.marketSignature = signature;
-    const tiles = [...panel.querySelectorAll(".product-tile")];
+    if (!heading || heading.textContent !== tr("products")) return;
     const data = branchData?.[currentBranch];
-    if (!data) { panel.dataset.marketSignature=""; return; }
-    panel.dataset.marketEnhanced="";
+    if (!data) return;
+    const signature = currentBranch + ":" + (data.products||[]).map(x=>x.id).join(",");
+    if (panel.dataset.marketSignature === signature) return;
+    panel.dataset.marketSignature = signature;
     renderMarket(data);
   });
   observer.observe(panel, {childList:true,subtree:true});
@@ -24,7 +22,7 @@
     panel.replaceChildren();
     const title=document.createElement("h3");title.textContent=tr("products");panel.append(title);
     const tools=document.createElement("div");tools.className="market-tools";
-    const search=document.createElement("input");search.type="search";search.placeholder=window.currentLang==="bn"?"পণ্য খুঁজুন…":window.currentLang==="ar"?"ابحث عن منتج…":"Search products…";search.setAttribute("aria-label",search.placeholder);
+    const search=document.createElement("input");search.type="search";search.placeholder=currentLang==="bn"?"পণ্য খুঁজুন…":window.currentLang==="ar"?"ابحث عن منتج…":"Search products…";search.setAttribute("aria-label",search.placeholder);
     const select=document.createElement("select");select.setAttribute("aria-label","Filter category");
     const all=document.createElement("option");all.value="";all.textContent=window.currentLang==="bn"?"সব ক্যাটাগরি":window.currentLang==="ar"?"كل الفئات":"All categories";select.append(all);
     (data.categories||[]).forEach(c=>{const o=document.createElement("option");o.value=c.id;o.textContent=text(c.name);select.append(o)});
@@ -40,7 +38,7 @@
         const card=document.createElement("article");card.className="product-tile market-tile";
         const media=document.createElement("div");media.className="market-media";
         const image=(p.image_paths||[]).find(x=>typeof x==="string"&&/^\/(?!\/)|^https:\/\//.test(x));
-        if(image){const img=document.createElement("img");img.loading="lazy";img.alt=text(p.name);img.src=image;media.append(img)}else{media.textContent=currentBranch==="ruhama"?"APP":window.currentBranch==="waha"?"AGRI":window.currentBranch==="attire"?"STYLE":"FOOD";media.className+=" market-placeholder"}
+        if(image){const img=document.createElement("img");img.loading="lazy";img.alt=text(p.name);img.src=image;media.append(img)}else{media.textContent=currentBranch==="ruhama"?"APP":currentBranch==="waha"?"AGRI":window.currentBranch==="attire"?"STYLE":"FOOD";media.className+=" market-placeholder"}
         const h=document.createElement("h4");h.textContent=text(p.name)||p.slug;
         const summary=document.createElement("p");summary.textContent=text(p.summary);
         card.append(media,h,summary);
