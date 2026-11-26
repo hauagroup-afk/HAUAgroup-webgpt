@@ -2,8 +2,11 @@ import { json, isSameOrigin, sessionCookie, authResponse } from "../_utils.js";
 
 export async function onRequestPost({ request, env }) {
   if (!isSameOrigin(request)) return json({ error: "Request origin rejected." }, 403);
+  const contentLength = Number(request.headers.get("Content-Length") || 0);
+  if (contentLength > 8000) return json({ error: "Login request is too large." }, 413);
   let body;
   try { body = await request.json(); } catch { return json({ error: "Invalid request." }, 400); }
+  if (!body || typeof body !== "object" || Array.isArray(body) || JSON.stringify(body).length > 8000) return json({ error: "Invalid request." }, 400);
   if (typeof body.email !== "string" || body.email.length > 254 || typeof body.password !== "string" || body.password.length < 8 || body.password.length > 256) {
     return json({ error: "Enter a valid email and password." }, 400);
   }
