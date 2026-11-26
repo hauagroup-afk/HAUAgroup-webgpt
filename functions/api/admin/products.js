@@ -1,4 +1,12 @@
 import { json, isSameOrigin, getAdminContext, authResponse, supabaseRequest, validText } from "../_utils.js";
+const UUID=/^[0-9a-f-]{36}$/i;
+async function readBody(request){
+  const length=Number(request.headers.get("Content-Length")||0);
+  if(length>32000) return {error:"Request too large.",status:413};
+  let body;try{body=await request.json()}catch{return {error:"Invalid request.",status:400}}
+  if(!body||typeof body!=="object"||Array.isArray(body)||JSON.stringify(body).length>32000) return {error:"Invalid request.",status:400};
+  return {body};
+}
 export async function onRequestGet({request,env}) {
   try {
     const ctx=await getAdminContext(request,env);
@@ -12,13 +20,15 @@ export async function onRequestGet({request,env}) {
 }
 export async function onRequestPost({request,env}) {
   if(!isSameOrigin(request)) return json({error:"Request origin rejected."},403);
-  let body;try{body=await request.json()}catch{return json({error:"Invalid request."},400)}
-  if(!validText(body.slug,100)||!validText(body.name?.en,160)) return json({error:"English product name and slug are required."},400);
+  const parsed=await readBody(request);if(parsed.error)return json({error:parsed.error},parsed.status);
+  const body=parsed.body;
+  if(!validText(body.slug,100)||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(body.slug.trim().toLowerCase())||!body.name||typeof body.name!=="object"||Array.isArray(body.name)||!validText(body.name.en,160)) return json({error:"English product name and a valid slug are required."},400);
+  if(body.category_id!=null&&body.category_id!==""&&!UUID.test(body.category_id))return json({error:"Invalid category."},400);
   try {
     const ctx=await getAdminContext(request,env);
     if(ctx.error) return authResponse({error:ctx.error},ctx,ctx.error==="unauthorized"?401:403);
     const companyId=ctx.profile.role==="group_admin"?body.company_id:ctx.profile.company_id;
-    if(!companyId) return authResponse({error:"Select a company."},ctx,400);
+    if(!companyId||!UUID.test(companyId)) return authResponse({error:"Select a valid company."},ctx,400);
     const price=body.unit_price==null||body.unit_price===""?null:Number(body.unit_price);
     if(price!==null&&(!Number.isFinite(price)||price<0||price>10000000)) return authResponse({error:"Enter a valid product price in BDT."},ctx,400);
     const payload={company_id:companyId,category_id:body.category_id||null,slug:body.slug.trim().toLowerCase(),name:body.name,summary:body.summary||{},description:body.description||{},specifications:body.specifications||{},image_paths:[],unit_price:price,currency:"BDT",status:"draft",featured:false,sort_order:0};
@@ -27,11 +37,11 @@ export async function onRequestPost({request,env}) {
     return authResponse({product:(await r.json())[0]},ctx,201);
   } catch { return json({error:"Admin service unavailable."},503); }
 }
-
 export async function onRequestPatch({request,env}) {
   if(!isSameOrigin(request)) return json({error:"Request origin rejected."},403);
-  let body;try{body=await request.json()}catch{return json({error:"Invalid request."},400)}
-  if(typeof body.id!=="string"||!/^[0-9a-f-]{36}$/i.test(body.id)||!["draft","published","archived"].includes(body.status)) return json({error:"Invalid product update."},400);
+  const parsed=await readBody(request);if(parsed.error)return json({error:parsed.error},parsed.status);
+  const body=parsed.body;
+  if(typeof body.id!=="string"||!UUID.test(body.id)||!["draft","published","archived"].includes(body.status)) return json({error:"Invalid product update."},400);
   try {
     const ctx=await getAdminContext(request,env);
     if(ctx.error) return authResponse({error:ctx.error},ctx,ctx.error==="unauthorized"?401:403);
