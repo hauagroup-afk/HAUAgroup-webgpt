@@ -2,6 +2,8 @@ import { json, isSameOrigin, validText } from "../_utils.js";
 const SLUGS=new Set(["lazeez","rifa-aimans-attire","ruhama-technology","waha-agri"]);
 export async function onRequestPost({request,env}) {
   if(!isSameOrigin(request)) return json({error:"Request origin rejected."},403);
+  const contentLength=Number(request.headers.get("Content-Length")||0);
+  if(contentLength>16000) return json({error:"Inquiry request is too large."},413);
   let body;try{body=await request.json()}catch{return json({error:"Invalid request."},400)}
   if(JSON.stringify(body).length>16000) return json({error:"Inquiry request is too large."},413);
   if(body.website) return json({ok:true});
