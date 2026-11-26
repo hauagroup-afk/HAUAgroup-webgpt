@@ -50,6 +50,22 @@ for (const [path, markers] of Object.entries(securityFiles)) {
   for (const marker of markers) if (!source.includes(marker)) failures.push("Security invariant missing in " + path + ": " + marker);
 }
 
+
+// Admin API validation and scoped access markers.
+const adminProductPath = "functions/api/admin/products.js";
+if (!existsSync(join(root, adminProductPath))) failures.push("Missing admin products endpoint");
+else {
+  const adminProductSource = readFileSync(join(root, adminProductPath), "utf8");
+  for (const marker of ["isSameOrigin", "Content-Length", "company_admin", "unit_price", "UUID", "32000"]) {
+    if (!adminProductSource.includes(marker)) failures.push("Admin product validation invariant missing: " + marker);
+  }
+}
+// Delivery fee is server-controlled, never accepted from the client payload.
+const orderSource = readFileSync(join(root, "functions/api/public/orders.js"), "utf8");
+if (!orderSource.includes("const deliveryCents = 0;") || orderSource.includes("money(body.delivery_fee)")) {
+  failures.push("Client-controlled delivery fee detected in order endpoint");
+}
+
 if (failures.length) {
   for (const failure of failures) console.error("FAIL: " + failure);
   process.exit(1);
