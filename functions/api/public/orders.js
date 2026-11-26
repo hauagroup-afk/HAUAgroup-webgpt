@@ -115,8 +115,8 @@ export async function onRequestPost({ request, env }) {
       };
     });
     const subtotalCents = items.reduce((sum, item) => sum + money(item.line_total), 0);
-    const deliveryCents = body.delivery_fee == null ? 0 : money(body.delivery_fee);
-    if (deliveryCents === null || deliveryCents > 10000000) return json({ error: "Invalid delivery fee." }, 400);
+    // Until server-side shipping rules are configured, ignore client-supplied fees.
+    const deliveryCents = 0;
     const totalCents = subtotalCents + deliveryCents;
     if (totalCents > 1000000000) return json({ error: "Order total is too high." }, 400);
 
