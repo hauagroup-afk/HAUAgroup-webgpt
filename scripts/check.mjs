@@ -37,6 +37,19 @@ for (const page of pages) {
     }
   }
 }
+
+// Basic security invariants for public endpoints.
+const securityFiles = {
+  "functions/api/auth/login.js": ["isSameOrigin", "Content-Length", "set-cookie"],
+  "functions/api/public/orders.js": ["isSameOrigin", "SUPABASE_SECRET_KEY", "unit_price", "payment_method"],
+  "functions/api/public/inquiries.js": ["isSameOrigin", "Content-Length"],
+};
+for (const [path, markers] of Object.entries(securityFiles)) {
+  if (!existsSync(join(root, path))) { failures.push("Missing security-critical endpoint: " + path); continue; }
+  const source = readFileSync(join(root, path), "utf8");
+  for (const marker of markers) if (!source.includes(marker)) failures.push("Security invariant missing in " + path + ": " + marker);
+}
+
 if (failures.length) {
   for (const failure of failures) console.error("FAIL: " + failure);
   process.exit(1);
