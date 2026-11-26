@@ -32,7 +32,7 @@
     <div class="field"><label for="slug">PRODUCT URL SLUG</label><input id="slug" maxlength="100" pattern="[a-z0-9-]+" placeholder="example-product" required></div>
     <div class="field"><label for="nameEn">PRODUCT NAME · ENGLISH</label><input id="nameEn" maxlength="160" required></div>
     <div class="field"><label for="nameBn">PRODUCT NAME · বাংলা</label><input id="nameBn" maxlength="160"></div>
-    <div class="field"><label for="nameAr">PRODUCT NAME · العربية</label><input id="nameAr" maxlength="160" dir="rtl"></div>
+    <div class="field"><label for="nameAr">PRODUCT NAME · العربية</label><input id="nameAr" maxlength="160" dir="rtl"></div><div class="field"><label for="unitPrice">PRICE · BDT (OPTIONAL)</label><input id="unitPrice" type="number" min="0" max="10000000" step="0.01" inputmode="decimal" placeholder="0.00"></div>
    </div>
    <button type="submit">Save as draft</button><span id="productStatus" class="status" role="status" aria-live="polite"></span>
   </form><div id="productsList" class="list"></div>
@@ -54,7 +54,7 @@ $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginSt
 $("logout").addEventListener("click",async()=>{try{await api("/api/auth/logout",{method:"POST",body:"{}"})}finally{location.reload()}});
 $("reloadProducts").addEventListener("click",loadProducts);$("reloadInquiries").addEventListener("click",loadInquiries);$("reloadOrders").addEventListener("click",loadOrders);
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));$("productsPanel").classList.toggle("hidden",b.dataset.tab!=="products");$("inquiriesPanel").classList.toggle("hidden",b.dataset.tab!=="inquiries");$("ordersPanel").classList.toggle("hidden",b.dataset.tab!=="orders");if(b.dataset.tab==="inquiries")loadInquiries();if(b.dataset.tab==="orders")loadOrders()}));
-$("productForm").addEventListener("submit",async e=>{e.preventDefault();$("productStatus").textContent="Saving draft…";try{await api("/api/admin/products",{method:"POST",body:JSON.stringify({company_id:$("company").value,slug:$("slug").value,name:{en:$("nameEn").value.trim(),bn:$("nameBn").value.trim(),ar:$("nameAr").value.trim()}})});$("productStatus").textContent="Draft saved successfully.";$("productForm").reset();await loadCompanies();await loadProducts()}catch(err){$("productStatus").textContent=err.message}});
+$("productForm").addEventListener("submit",async e=>{e.preventDefault();$("productStatus").textContent="Saving draft…";try{await api("/api/admin/products",{method:"POST",body:JSON.stringify({company_id:$("company").value,slug:$("slug").value,name:{en:$("nameEn").value.trim(),bn:$("nameBn").value.trim(),ar:$("nameAr").value.trim()},unit_price:$("unitPrice").value||null})});$("productStatus").textContent="Draft saved successfully.";$("productForm").reset();await loadCompanies();await loadProducts()}catch(err){$("productStatus").textContent=err.message}});
 api("/api/auth/me").then(d=>showDashboard(d.profile)).catch(()=>{});
 </script>
 </body></html>
