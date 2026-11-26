@@ -21,6 +21,7 @@ export async function onRequestPost({ request, env }) {
   if (contentLength > 32000) return json({ error: "Order request is too large." }, 413);
   let body;
   try { body = await request.json(); } catch { return json({ error: "Invalid request." }, 400); }
+  if (JSON.stringify(body).length > 32000) return json({ error: "Order request is too large." }, 413);
   if (body.website) return json({ ok: true }, 201);
 
   const slug = body.company;
