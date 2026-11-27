@@ -56,7 +56,7 @@
     const desc=document.createElement("p");desc.textContent=text(p.description)||text(p.summary);
     box.append(close,h);
     const image=(p.image_paths||[]).find(x=>typeof x==="string"&&/^\/(?!\/)|^https:\/\//.test(x));
-    if(image){const visual=document.createElement("div");visual.className="market-media";visual.style.height="220px";const img=document.createElement("img");img.src=image;img.alt=text(p.name);img.loading="lazy";visual.append(img);box.append(visual)}
+    if(image){const visual=document.createElement("div");visual.className="market-media";const img=document.createElement("img");img.src=image;img.alt=text(p.name);img.loading="lazy";visual.append(img);box.append(visual)}
     box.append(desc);
     if(p.unit_price!=null){const price=document.createElement("p");price.className="market-price";price.textContent=Number(p.unit_price).toLocaleString(currentLang==="bn"?"bn-BD":"en-BD",{minimumFractionDigits:2,maximumFractionDigits:2})+" BDT";box.append(price)}
     if(p.specifications){const specs=document.createElement("pre");specs.className="market-specs";specs.textContent=typeof p.specifications==="string"?p.specifications:JSON.stringify(p.specifications,null,2);box.append(specs)}
