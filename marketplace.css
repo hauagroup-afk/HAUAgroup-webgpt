@@ -1,1 +1,15 @@
 .market-tools{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.market-tools input,.market-tools select{flex:1;min-width:170px;background:#11120f;border:1px solid #5e512f;border-radius:10px;padding:12px;color:#f7f2e8;font:inherit}.market-tile{display:flex;flex-direction:column;gap:10px;text-align:left}.market-media{height:160px;border-radius:10px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center}.market-media img{width:100%;height:100%;object-fit:cover}.market-placeholder{background:linear-gradient(140deg,#22251d,#11120f);color:#d8b45b;font:500 25px Georgia,serif;letter-spacing:.1em}.market-price{font-weight:700;color:#e8d49b!important;font-size:14px!important}.market-detail{align-self:flex-start;border:1px solid #d8b45b66;border-radius:999px;background:#161612;color:#e8d49b;padding:8px 16px;cursor:pointer}.market-modal{position:fixed;z-index:50;inset:0;background:#000b;backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:20px}.market-modal-card{position:relative;width:min(640px,100%);max-height:85vh;overflow:auto;background:#151512;border:1px solid #d8b45b66;border-radius:20px;padding:28px;color:#d0c7b5;line-height:1.8}.market-modal-card h2{font:500 28px Georgia,serif;color:#f2dfad}.market-close{float:right;background:transparent;color:#f2dfad;border:1px solid #d8b45b66;border-radius:50%;width:38px;height:38px;font-size:22px;padding:0}.market-specs{white-space:pre-wrap;overflow-wrap:anywhere;color:#c4b99f;background:#0a0a09;padding:14px;border-radius:10px}@media(max-width:520px){.market-media{height:135px}.market-modal-card{padding:20px}}
+.market-cartbar{display:flex;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.market-add{background:linear-gradient(120deg,#d5ae55,#f1d994)!important;color:#17130a!important;font-weight:700}
+.market-checkout{display:grid;gap:12px;margin-top:18px;text-align:left}
+.market-checkout label{display:grid;gap:6px;color:#d8c99f;font-size:13px}
+.market-checkout input,.market-checkout textarea{width:100%;background:#11120f;border:1px solid #5e512f;border-radius:10px;padding:12px;color:#fff;font:inherit}
+.market-checkout textarea{min-height:80px;resize:vertical}
+.market-cartlist{display:grid;gap:12px}
+.market-cartitem{display:grid;grid-template-columns:minmax(0,1fr) 75px auto auto;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}
+.market-cartitem input{width:70px;background:#111;border:1px solid var(--line);color:white;padding:8px;border-radius:8px}
+.market-cartitem strong{overflow-wrap:anywhere}
+.market-note{border:1px solid #3b9b5266;border-radius:12px;padding:12px;margin:12px 0;color:#c4d9c0}
+.market-status{color:#e8d49b}
+.market-modal-card .market-add{margin-top:10px}
+@media(max-width:520px){.market-cartitem{grid-template-columns:1fr 65px;}.market-cartitem span,.market-cartitem button{grid-column:2}}
