@@ -43,6 +43,7 @@ const securityFiles = {
   "functions/api/auth/login.js": ["isSameOrigin", "Content-Length", "set-cookie"],
   "functions/api/public/orders.js": ["isSameOrigin", "SUPABASE_SECRET_KEY", "unit_price", "payment_method"],
   "functions/api/public/inquiries.js": ["isSameOrigin", "Content-Length"],
+  "functions/api/admin/content.js": ["isSameOrigin", "getAdminContext", "company_admin", "is_published"],
 };
 for (const [path, markers] of Object.entries(securityFiles)) {
   if (!existsSync(join(root, path))) { failures.push("Missing security-critical endpoint: " + path); continue; }
@@ -70,4 +71,5 @@ if (failures.length) {
   for (const failure of failures) console.error("FAIL: " + failure);
   process.exit(1);
 }
+if (!existsSync(join(root,"admin/admin.js")) || !existsSync(join(root,"admin/admin.css"))) failures.push("Missing external admin assets");
 console.log("HAUA GROUP checks passed: JavaScript syntax, local assets, no inline handlers/styles, and CSP hashes.");
