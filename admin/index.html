@@ -19,7 +19,7 @@
 <section id="dashboard" class="hidden">
  <div class="row"><div><div class="eyebrow">HAUA GROUP · CONTROL CENTRE</div><h1 class="heading">Administration</h1><p id="profileLabel" class="muted"></p></div><button id="logout" class="secondary" type="button">Sign out</button></div>
  <div class="notice">Your access is limited by your administrator role and the database row-level security policies. Never share your password or leave this session open on a shared device.</div>
- <div class="tabs"><button class="active" data-tab="products" type="button">Products</button><button data-tab="inquiries" type="button">Inquiries</button><button data-tab="orders" type="button">Orders</button><button data-tab="content" type="button">Apps · Ads · Content</button></div>
+ <div class="tabs"><button class="active" data-tab="products" type="button">Products</button><button data-tab="inquiries" type="button">Inquiries</button><button data-tab="orders" type="button">Orders</button><button data-tab="content" type="button">Apps · Ads · Content</button><button data-tab="reviews" type="button">Reviews</button></div>
  <section id="productsPanel" class="card">
   <div class="row"><h2 class="heading small-heading">Product catalogue</h2><button id="reloadProducts" class="secondary" type="button">Refresh</button></div>
   <form id="productForm">
@@ -45,6 +45,7 @@
  <div class="field"><label for="contentUrl">LINK / VIDEO URL</label><input id="contentUrl" maxlength="1000" type="url"></div>
  </div><div class="field"><label for="contentJson">DETAILS JSON (multilingual fields allowed)</label><textarea id="contentJson" rows="7" maxlength="12000" placeholder='{"type":"app","description":{"en":"...","bn":"..."},"download_url":"https://...","version":"1.0"}'></textarea></div>
  <label><input id="contentPublish" type="checkbox"> Publish immediately</label><button type="submit">Save content</button><span id="contentStatus" class="status" role="status"></span></form><div id="contentList" class="list"></div>
+ <section id="reviewsPanel" class="card hidden"><div class="row"><h2 class="heading small-heading">Product reviews · moderation</h2><button id="reloadReviews" class="secondary" type="button">Refresh</button></div><div id="reviewsList" class="list"></div></section>
  </section>
 </section>
 </main>
