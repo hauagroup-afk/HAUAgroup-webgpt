@@ -48,14 +48,21 @@
     search.addEventListener("input",draw);select.addEventListener("change",draw);draw();
   }
   function showDetails(p){
+    const previousFocus=document.activeElement;
     const modal=document.createElement("div");modal.className="market-modal";
     const box=document.createElement("section");box.className="market-modal-card";box.setAttribute("role","dialog");box.setAttribute("aria-modal","true");
     const close=document.createElement("button");close.className="market-close";close.textContent="×";close.setAttribute("aria-label","Close");close.addEventListener("click",()=>modal.remove());
     const h=document.createElement("h2");h.textContent=text(p.name);
     const desc=document.createElement("p");desc.textContent=text(p.description)||text(p.summary);
-    box.append(close,h,desc);
+    box.append(close,h);
+    const image=(p.image_paths||[]).find(x=>typeof x==="string"&&/^\/(?!\/)|^https:\/\//.test(x));
+    if(image){const visual=document.createElement("div");visual.className="market-media";visual.style.height="220px";const img=document.createElement("img");img.src=image;img.alt=text(p.name);img.loading="lazy";visual.append(img);box.append(visual)}
+    box.append(desc);
     if(p.unit_price!=null){const price=document.createElement("p");price.className="market-price";price.textContent=Number(p.unit_price).toLocaleString(currentLang==="bn"?"bn-BD":"en-BD",{minimumFractionDigits:2,maximumFractionDigits:2})+" BDT";box.append(price)}
     if(p.specifications){const specs=document.createElement("pre");specs.className="market-specs";specs.textContent=typeof p.specifications==="string"?p.specifications:JSON.stringify(p.specifications,null,2);box.append(specs)}
-    modal.append(box);modal.addEventListener("click",e=>{if(e.target===modal)modal.remove()});document.body.append(modal);close.focus();
+    function dismiss(){modal.remove();document.removeEventListener("keydown",onKey);if(previousFocus&&previousFocus.focus)previousFocus.focus();}
+    close.addEventListener("click",dismiss);
+    function onKey(e){if(e.key==="Escape")dismiss();if(e.key==="Tab"){const focusable=[close];if(e.shiftKey&&document.activeElement===close){e.preventDefault();close.focus()}}}
+    modal.append(box);modal.addEventListener("click",e=>{if(e.target===modal)dismiss()});document.body.append(modal);document.addEventListener("keydown",onKey);close.focus();
   }
 })();
